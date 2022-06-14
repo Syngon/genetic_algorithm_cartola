@@ -1,0 +1,59 @@
+API LINK - https://github.com/giovanigenerali/cartrolandofc/blob/master/nova-api.md
+STUDY GA {
+    https://python.plainenglish.io/genetic-algorithm-in-python-101-da1687d3339b
+    https://faun.pub/genetic-algorithms-to-solve-the-zero-one-knapsack-problem-implementation-26c1982f44b3
+}
+
+
+
+What need?
+	- 1 Tecnico always
+	- 1 Goleiro always
+	- 2 laterais always
+	- 2 zagueiros always
+	- 3 ou 4 meias
+	- 2 ou 3 atacantes
+
+
+
+Fitness function
+	- soma o fitness de tds os players
+	- Fitness dos players
+		- ver posicao do proprio time e do time oposto, valor = time_do_player_na_frente ? 1 : 0
+		- quem joga em casa, valor = player_joga_em_casa ? 1 : 0
+		- aproveitamento melhor, Empate = 0, Derrota -1 e Vitoria +1, soma tudo e comapara que time teve melhor aproveitamento, valor = time_player_melhor_aproveitamento ? 1 : 0
+		- fazer media do valor e de quanto pontuou, ver diferenca e calcular se tem como evoluir muito a pontuacao, usar o MINIMO_PARA_VALORIZAR e o SCOUT do player
+	- Caso a soma dos valores dos players ultrapasse o budget, fitness fica horrivel
+	-
+
+Chromosome Initialization
+	-
+	-
+	-
+
+Initialize Population
+	-
+	-
+	-
+
+Fitness Evaluation
+	-
+	-
+	-
+
+Roulette Selection
+	-
+	-
+	-
+
+Crossover
+	-
+	-
+	-
+
+Mutation
+	-
+	-
+	-
+
+Repeat from Initialize Population
