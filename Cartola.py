@@ -15,6 +15,8 @@ from Individual import Individual
 
 
 # TODO SELECTION PRA FRENTE
+# fazer funcao em individual, que ordena a lista de index dos jogadores q tao no time,
+# dai o slection do cartola corta no meio e troca e ve o fitness novamente
 
 
 # Has the responsability to manage individuals
@@ -24,24 +26,23 @@ class Cartola:
         self.num_generations = num_generations
         self.solutions_per_pop = solutions_per_pop
         self.population = self.get_initial_population()
-        self.pop_size = (self.solutions_per_pop, self.population[0].get_individual_len())
 
     def optimize(self):
         parameters, fitness_history, team_budget_history = [], [], []
-        num_parents = int(self.pop_size[0] / 2)
-        num_offsprings = self.pop_size[0] - num_parents
+        num_offsprings = self.solutions_per_pop - 2
 
-        for i in range(self.num_generations):
+        for _ in range(self.num_generations):
             fitness, team_budget = self.calc_fitness(self.population)
             fitness_history.append(fitness)
             team_budget_history.append(team_budget)
 
-            parents = self.selection()
-            offsprings = self.crossover()
+            parents = self.selection(self.population)
+            offsprings = self.crossover(parents)
             mutants = self.mutation()
 
-            self.population[0 : parents.shape[0], :] = parents
-            self.population[parents.shape[0] : , :] = mutants
+            self.population[0] = parents[0]
+            self.population[1] = parents[1]
+            self.population[2:] = mutants
 
         print('\nLast generation: \n{}\n'.format(self.population))
         fitness_last_gen = self.calc_fitness()
@@ -64,8 +65,19 @@ class Cartola:
 
         return fitness, team_budget
 
-    def selection(self, fitness, num_parents, population):
-        return None
+    def selection(self, population):
+        parents = []
+
+        for individual in population:
+            if len(parents) < 2:
+                parents.append(individual)
+            else:
+                if parents[0].get_individual_fitness(self.budget) < individual.get_individual_fitness(self.budget):
+                    parents[0] = individual
+                elif parents[1].get_individual_fitness(self.budget) < individual.get_individual_fitness(self.budget):
+                    parents[1] = individual
+
+        return parents
 
     def crossover(self, parents, num_offsprings):
         return None

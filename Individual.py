@@ -10,6 +10,7 @@ class Individual:
     def __init__(self):
         self.__next_games, self.__players, self.__teams, self.__positions, self.__status = self.get_info()
         self.__individual_population = []
+        self.size = len(self.__players)
 
     @staticmethod
     def get_info():
@@ -122,7 +123,6 @@ class Individual:
                 fitness_of_team_members += self.get_player_points(self.__players[index])
 
         return fitness_of_team_members, team_budget
-
 
     def get_teams_by_player(self, player):
         players_team_id = player['clube_id']
