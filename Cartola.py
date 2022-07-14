@@ -14,7 +14,7 @@ from Individual import Individual
 
 
 
-# TODO SELECTION PRA FRENTE
+# TODO CROSSOVER
 # fazer funcao em individual, que ordena a lista de index dos jogadores q tao no time,
 # dai o slection do cartola corta no meio e troca e ve o fitness novamente
 
@@ -37,7 +37,7 @@ class Cartola:
             team_budget_history.append(team_budget)
 
             parents = self.selection(self.population)
-            offsprings = self.crossover(parents)
+            offsprings = self.crossover(parents, num_offsprings)
             mutants = self.mutation()
 
             self.population[0] = parents[0]
@@ -79,6 +79,7 @@ class Cartola:
 
         return parents
 
+    # TODO HEEEEERE
     def crossover(self, parents, num_offsprings):
         return None
 

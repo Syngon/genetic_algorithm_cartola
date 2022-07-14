@@ -13,7 +13,7 @@ class Individual:
         self.size = len(self.__players)
 
     @staticmethod
-    def get_info():
+    def get_info() -> object:
         next_games_response = requests.get('https://api.cartola.globo.com/partidas')
         market_response = requests.get('https://api.cartola.globo.com/atletas/mercado')
 
@@ -202,10 +202,10 @@ class Individual:
         return player_points
 
     def get_player_points(self, player):
-        if player['preco_num'] == 0 or player['media_num'] == 0 or player['minimo_para_valorizar'] :
+        if player['preco_num'] == 0 or player['media_num'] == 0 or player['minimo_para_valorizar']  == 0:
             return 0
 
-        player_price_valorize_bool = 1 if player['preco_num'] / player['media_num'] < player['minimo_para_valorizar'] else 0
+        player_price_valorize_bool = 1 if int(player['preco_num'] / player['media_num']) < (player['minimo_para_valorizar'] or 0) else 0
         player_overpriced_bool = 1 if player['preco_num'] / player['media_num'] > 2 else 0
         return player_price_valorize_bool + player_overpriced_bool
 
