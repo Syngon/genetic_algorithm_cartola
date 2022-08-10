@@ -1,17 +1,10 @@
-import random
-from turtle import position
 import numpy as np
-import pandas as pd
-import random as rd
-from random import randint
-import requests
-import matplotlib.pyplot as plt
-import json
+from random import randrange
 
-from Individual import Individual
+
+from individual import Individual
 
 # TODO MELHORAR FUNC FITNESS
-
 
 
 # TODO CROSSOVER
@@ -21,6 +14,11 @@ from Individual import Individual
 
 # Has the responsability to manage individuals
 class Cartola:
+    population: list[Individual]
+    budget: int
+    num_generations: int
+    solutions_per_pop: int
+
     def __init__(self, budget, num_generations=150, solutions_per_pop=8):
         self.budget = budget
         self.num_generations = num_generations
@@ -40,10 +38,6 @@ class Cartola:
             offsprings = self.crossover(parents, num_offsprings)
             mutants = self.mutation()
 
-            self.population[0] = parents[0]
-            self.population[1] = parents[1]
-            self.population[2:] = mutants
-
         print('\nLast generation: \n{}\n'.format(self.population))
         fitness_last_gen = self.calc_fitness()
         print('\nFitness of the last generation: \n{}\n'.format(fitness_last_gen))
@@ -52,43 +46,79 @@ class Cartola:
 
         return parameters, fitness_history
 
-    def calc_fitness(self, population):
+    def calc_fitness(self, population: list[Individual]):
         # list of populations fitness
         fitness = []
         team_budget = []
 
         # for each solution
         for index, item in enumerate(population):
-            fitness_individual, team_value_individual = self.population[index].get_individual_fitness(self.budget)
+            fitness_individual, team_value_individual = self.population[index].get_individual_fitness(
+                self.budget)
+
             fitness.append(fitness_individual)
             team_budget.append(team_value_individual)
 
         return fitness, team_budget
 
-    def selection(self, population):
-        parents = []
+    def selection(self, population: list[Individual]) -> list[Individual]:
+        parent_1 = population[0]
+        parent_2 = population[-1]
 
-        for individual in population:
-            if len(parents) < 2:
-                parents.append(individual)
-            else:
-                if parents[0].get_individual_fitness(self.budget) < individual.get_individual_fitness(self.budget):
-                    parents[0] = individual
-                elif parents[1].get_individual_fitness(self.budget) < individual.get_individual_fitness(self.budget):
-                    parents[1] = individual
+        fitness_values = [individual.get_team_fitness()
+                          for individual in population]
+        fitness_values.sort(reverse=True)
+        fitness_values = fitness_values[:2]
 
-        return parents
+        for item in population:
+            if item.get_team_fitness() == fitness_values[0]:
+                parent_1 = item
+            elif item.get_team_fitness() == fitness_values[1]:
+                parent_2 = item
 
-    # TODO HEEEEERE
-    def crossover(self, parents, num_offsprings):
+        return [parent_1, parent_2]
+
+    # TODO HERE
+
+    def crossover(self, parents: list[Individual], num_offsprings: int):
+        parent_1 = dict()
+        parent_2 = dict()
+        children: list[Individual]
+
+        for idx, i in enumerate(parents[0].get_individual_population()):
+            if i == 1:
+                parent_1[idx] = parents[0].get_player(idx).posicao_id
+
+        for idx, i in enumerate(parents[1].get_individual_population()):
+            if i == 1:
+                parent_2[idx] = parents[1].get_player(idx).posicao_id
+
+        #
+
+        for idx in range(num_offsprings):
+            max_changes = randrange(6)
+            changes = 0
+
+            while changes <= max_changes:
+                for idx_i, i in enumerate(parent_1):
+                    for idx_j, j in enumerate(parent_2):
+                        if parent_1[idx_i] == parent_2[idx_j]:
+                            aux = parent_2[idx_j]
+                            parent_2[idx_j] = parent_1[idx_i]
+                            parent_1[idx_i] = aux
+
+                            changes += 1
+
+        print("")
+
         return None
 
     def mutation(self, offsprings):
         return None
 
     # TODO CORRIGIR FUNCAO, ESTAVA APENAS PEGANDO OS PRIMEIROS ATLETAS, E NAO ALGO DE FATO RANDOMICO
-    def get_initial_population(self):
-        population = []
+    def get_initial_population(self) -> list[Individual]:
+        population: list[Individual] = []
 
         # populate all solutions and return then
         for _ in range(self.solutions_per_pop):
@@ -103,7 +133,7 @@ class Cartola:
         found_game = False
 
         for game in self.next_games:
-            if game['clube_casa_id'] == player_team_id or game ['clube_visitante_id'] == player_team_id:
+            if game['clube_casa_id'] == player_team_id or game['clube_visitante_id'] == player_team_id:
                 home_team = game['clube_casa_id']
                 visiting_team = game['clube_visitante_id']
                 found_game = True
